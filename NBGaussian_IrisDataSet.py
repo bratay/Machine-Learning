@@ -24,4 +24,22 @@ X = array[:,0:4]
 y = array[:,4]
 X_train, X_validation, Y_train, Y_validation = train_test_split(X, y, test_size=0.50, random_state=1)
 
+# training model
+# 'Gaussian Model', GaussianNB()
+tenFoldVal = StratifiedKFold(n_splits=10, random_state=1, shuffle=True)
+result = cross_val_score( GaussianNB(), X_train, Y_train, cv = tenFoldVal, scoring='accuracy')
 
+print('%s: %f (%f)' % ('Gaussian Model', result.mean(), result.std()))
+
+# Make predictions on validation dataset
+model = GaussianNB()
+model.fit(X_train, Y_train)
+predictions = model.predict(X_validation)
+print('\n')
+
+# Evaluate predictions
+print(accuracy_score(Y_validation, predictions))
+print('\n')
+print(confusion_matrix(Y_validation, predictions))
+print('\n')
+print(classification_report(Y_validation, predictions))
