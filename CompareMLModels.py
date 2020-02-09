@@ -21,9 +21,9 @@ def printResults(modelData, modelName):
     prediction = modelData.predict(X_validation)
 
     # Evaluate prediction
-    print("\nAccuracy metric\n")
+    print("Accuracy metric")
     print(accuracy_score(Y_validation, prediction))
-    print("\nConfusion matrix\n")
+    print("\nConfusion matrix")
     print(confusion_matrix(Y_validation, prediction))
     print("\n")
 
