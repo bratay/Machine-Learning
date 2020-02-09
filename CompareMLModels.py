@@ -11,14 +11,31 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
 
+
+def printResults(modelData, modelName):
+    print("#######################################")
+    print("%s" % modelName)
+    print("#######################################")
+    # Make prediction on validation dataset
+    modelData.fit(X_train, Y_train)
+    prediction = modelData.predict(X_validation)
+
+    # Evaluate prediction
+    print("\nAccuracy metric\n")
+    print(accuracy_score(Y_validation, prediction))
+    print("\nConfusion matrix\n")
+    print(confusion_matrix(Y_validation, prediction))
+    print("\n")
+
+
 # Load dataset
 url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/iris.csv"
 names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 dataset = read_csv(url, names=names)
 
 array = dataset.values
-X = [:, 0:4]
-y = [:, 4]
+X = array[:, 0:4]
+y = array[:, 4]
 X_train, X_validation, Y_train, Y_validation = train_test_split(
     X, y, test_size=0.50, random_state=1)
 
@@ -36,18 +53,17 @@ models.append(('LinearRegression degree 3', LogisticRegression(
 models.append(('KNeighborsClassifier', KNeighborsClassifier()))
 # LDA (LinearDiscriminantAnalysis)
 models.append(('LinearDiscriminantAnalysis', LinearDiscriminantAnalysis()))
-# Naïve Baysian (NBClassifier)
+# Naive Baysian (NBClassifier)
 models.append(('NBClassifier', GaussianNB()))  # Same as NBClassifier?
 
 results = []
 names = []
+#Train make prediction and print result
 for name, model in models:
     twoFold = StratifiedKFold(n_splits=2, random_state=1, shuffle=True)
     cv_results = cross_val_score(
-        model, X_train, Y_train, cv=kfold, scoring='accuracy')
+        model, X_train, Y_train, cv=twoFold, scoring='accuracy')
     results.append(cv_results)
     names.append(name)
-    # train, test, and get result
 
-
-# print
+    printResults(model, name)
