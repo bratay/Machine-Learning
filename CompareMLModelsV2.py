@@ -1,17 +1,4 @@
 # Load libraries
-# from pandas import read_csv
-# from sklearn.model_selection import train_test_split
-# from sklearn.model_selection import cross_val_score
-# from sklearn.model_selection import StratifiedKFold
-# from sklearn.metrics import classification_report
-# from sklearn.metrics import confusion_matrix
-# from sklearn.metrics import accuracy_score
-# from sklearn.linear_model import LinearRegression
-# from sklearn import linear_model
-# from sklearn.neighbors import KNeighborsClassifier
-# from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-# from sklearn.naive_bayes import GaussianNB
-
 import numpy as np
 
 from pandas import read_csv
@@ -31,6 +18,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn import svm
 
 def printLinearResults(matrix, acc, modelName):
     print("#######################################")
@@ -81,9 +69,9 @@ x_one, x_two, y_one, y_two = train_test_split(
     x, y, test_size=0.50, random_state=1)
 
 models = []
-# SVN 
-
-# NN
+# SVN (Support Vector Machine)
+models.append(('Support Vector Machine',  svm.LinearSVC()))
+# NN (Neural Network)
 
 # kNN (KNeighborsClassifier)
 models.append(('KNeighborsClassifier', KNeighborsClassifier()))
