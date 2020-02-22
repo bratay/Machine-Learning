@@ -19,6 +19,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn import svm
+from sklearn.neural_network import MLPClassifier
 
 def printLinearResults(matrix, acc, modelName):
     print("#######################################")
@@ -72,7 +73,8 @@ models = []
 # SVN (Support Vector Machine)
 models.append(('Support Vector Machine',  svm.LinearSVC()))
 # NN (Neural Network)
-
+# models.append(('Neural Network', neural_network.MLPClassifier()))
+models.append(('Neural Network', MLPClassifier()))
 # kNN (KNeighborsClassifier)
 models.append(('KNeighborsClassifier', KNeighborsClassifier()))
 # LDA (LinearDiscriminantAnalysis)
@@ -87,8 +89,6 @@ for name, model in models:
 
     cv_results = cross_val_score(
         model, x_one, y_one, cv=twoFold, scoring='accuracy')
-
-    names.append(name)
 
     printResults(model, name)
 
