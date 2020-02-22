@@ -73,7 +73,6 @@ models = []
 # SVN (Support Vector Machine)
 models.append(('Support Vector Machine',  svm.LinearSVC()))
 # NN (Neural Network)
-# models.append(('Neural Network', neural_network.MLPClassifier()))
 models.append(('Neural Network', MLPClassifier()))
 # kNN (KNeighborsClassifier)
 models.append(('KNeighborsClassifier', KNeighborsClassifier()))
