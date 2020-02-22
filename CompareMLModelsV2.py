@@ -155,7 +155,6 @@ tmpAccuracy = accuracy_score(
 matrix = confusion_matrix(np.concatenate(
     [y_validation2, y_train2]), np.concatenate([foldOne, foldTwo]))
 
-
 printLinearResults( matrix , str(round(tmpAccuracy, 3)) , "2 Degree Polynomial Regression")
 
 
