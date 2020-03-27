@@ -74,7 +74,6 @@ print("/////////////" + " eigen values " + "/////////////")
 print(vectors)
 print("\n/////////////" + " eigen vectors " + "/////////////")
 print(values)
-
 print('\nPoV = ' + str(values[0] / (values[0] + values[1] + values[2])) + "\n")
 
 # For part 3 and 4
@@ -121,18 +120,17 @@ for x in range(0, 100):
         prePreformance = curPerformance
     else:
         acceptProbability = 0
-        ranVar = 0
+        ranUnform = 0 ########### I dont know what you mean by random uniform
 
-        if(ranVar > acceptProbability):
+        if(ranUnform > acceptProbability):
             # print("REJECT")
             curPerformance = 0
         else:
             # print("ACCEPT")
             prePreformance = curPerformance
 
-
 #############################################
-# Part 4 simulated annealing
+# Part 4 genetic algorithm
 #############################################
 print("\n\n////////////////// PART 4 //////////////////\n\n")
 
