@@ -24,6 +24,9 @@ from sklearn.datasets import make_classification
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.over_sampling import SMOTE, ADASYN
 
+from imblearn.under_sampling import TomekLinks
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.under_sampling import ClusterCentroids
 
 # Load dataset
 dataset = read_csv("imbalanced iris.csv")
@@ -109,12 +112,12 @@ print((classOne + classTwo + classThree) / 3)
 #############################################
 print("\n\n//////////////////  PART 2 //////////////////\n\n")
 
-def printOversampling(newX, newY):
+
+def printSampling(newX, newY):
     x = newX
     y = newY
     x_one, x_two, y_one, y_two = train_test_split(
         x, y, test_size=0.50, random_state=1)
-
 
     modelData = DecisionTreeClassifier()
     # Make prediction on validation dataset
@@ -134,33 +137,59 @@ def printOversampling(newX, newY):
     print("\nConfusion matrix")
     print(confusion_matrix(val, prediction))
 
+
 X, y = make_classification(n_samples=5000, n_features=2, n_informative=2,
                            n_redundant=0, n_repeated=0, n_classes=3,
                            n_clusters_per_class=1,
                            weights=[0.01, 0.05, 0.94],
                            class_sep=0.8, random_state=0)
 
+print("-- Random oversampling -- \n")
 ros = RandomOverSampler(random_state=0)
 X_resampled, y_resampled = ros.fit_resample(X, y)
 
-print("-- Random oversampling -- \n")
-printOversampling(X_resampled, y_resampled)
+printSampling(X_resampled, y_resampled)
 
 print("\n\n-- SMOTE -- \n")
 
 X_resampled, y_resampled = SMOTE().fit_resample(X, y)
-printOversampling(X_resampled, y_resampled)
-
+printSampling(X_resampled, y_resampled)
 
 
 print("\n\n-- ADASYN -- \n")
 
 X_resampled, y_resampled = ADASYN().fit_resample(X, y)
-printOversampling(X_resampled, y_resampled)
+printSampling(X_resampled, y_resampled)
 
 
 #############################################
 # Part 3 Undersampling
 #############################################
 print("\n\n////////////////// PART 3 //////////////////\n\n")
+
+X, y = make_classification(n_samples=5000, n_features=2, n_informative=2,
+                           n_redundant=0, n_repeated=0, n_classes=3,
+                           n_clusters_per_class=1,
+                           weights=[0.01, 0.05, 0.94],
+                           class_sep=0.8, random_state=0)
+
+
+print("-- Random undersampling -- \n")
+rus = RandomUnderSampler(random_state=0)
+X_resampled, y_resampled = rus.fit_resample(X, y)
+
+printSampling(X_resampled, y_resampled)
+
+
+print("\n\n-- Cluster undersampling -- \n")
+cc = ClusterCentroids(random_state=0)
+X_resampled, y_resampled = cc.fit_resample(X, y)
+
+printSampling(X_resampled, y_resampled)
+
+print("\n\n-- Tomek links  -- \n")
+tom = TomekLinks()
+X_resampled, y_resampled = tom.fit_resample(X, y)
+
+printSampling(X_resampled, y_resampled)
 
