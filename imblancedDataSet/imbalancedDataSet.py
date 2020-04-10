@@ -21,10 +21,8 @@ from numpy import cov
 from numpy.linalg import eig
 from sklearn.datasets import make_classification
 
-# from imblearn import under_sampling, over_sampling
-# from imblearn.over_sampling import SMOTE
-# from imblearn.over_sampling import RandomOverSampler
-
+from imblearn.over_sampling import RandomOverSampler
+from imblearn.over_sampling import SMOTE, ADASYN
 
 
 # Load dataset
@@ -83,7 +81,7 @@ print(accuracy_score(val, prediction))
 print("\nConfusion matrix")
 print(confusion_matrix(val, prediction))
 
-print("Class balance accuracy")
+print("\nClass balance accuracy")
 matrix = confusion_matrix(val, prediction)
 
 classOne = float(min(matrix[0][0] / float(matrix[0][0] + matrix[0][1] +
@@ -95,7 +93,7 @@ classThree = float(min(matrix[2][2] / float((matrix[2][0] + matrix[2][1] + matri
 
 print((classOne + classTwo + classThree) / 3)
 
-print("Balance accuracy")
+print("\nBalance accuracy")
 classOne = float(min(float(np.sum(matrix, axis=0)[2] + np.sum(matrix, axis=0)[1] - matrix[0][1] - matrix[0][2]) / (float(
     np.sum(matrix, axis=0)[2] + np.sum(matrix, axis=0)[1])), matrix[0][0] / (matrix[0][0] + matrix[1][0] + matrix[2][0])))
 classTwo = float(min(float(np.sum(matrix, axis=0)[2] + np.sum(matrix, axis=0)[0] - matrix[1][0] - matrix[1][2]) / (float(
@@ -111,21 +109,58 @@ print((classOne + classTwo + classThree) / 3)
 #############################################
 print("\n\n//////////////////  PART 2 //////////////////\n\n")
 
+def printOversampling(newX, newY):
+    x = newX
+    y = newY
+    x_one, x_two, y_one, y_two = train_test_split(
+        x, y, test_size=0.50, random_state=1)
+
+
+    modelData = DecisionTreeClassifier()
+    # Make prediction on validation dataset
+    modelData.fit(x_one, y_one)
+    prediction1 = modelData.predict(x_two)
+
+    modelData.fit(x_two, y_two)
+    prediction2 = modelData.predict(x_one)
+
+    # combined both predictions
+    prediction = np.concatenate((prediction1, prediction2))
+    val = np.concatenate((y_two, y_one))
+
+    # Evaluate prediction
+    print("Accuracy metric")
+    print(accuracy_score(val, prediction))
+    print("\nConfusion matrix")
+    print(confusion_matrix(val, prediction))
+
 X, y = make_classification(n_samples=5000, n_features=2, n_informative=2,
                            n_redundant=0, n_repeated=0, n_classes=3,
                            n_clusters_per_class=1,
                            weights=[0.01, 0.05, 0.94],
                            class_sep=0.8, random_state=0)
 
-# ros = RandomOverSampler(random_state=0)
-# X_resampled, y_resampled = ros.fit_resample(X, y)
-# print(sorted(Counter(y_resampled).items()))
+ros = RandomOverSampler(random_state=0)
+X_resampled, y_resampled = ros.fit_resample(X, y)
+
+print("-- Random oversampling -- \n")
+printOversampling(X_resampled, y_resampled)
+
+print("\n\n-- SMOTE -- \n")
+
+X_resampled, y_resampled = SMOTE().fit_resample(X, y)
+printOversampling(X_resampled, y_resampled)
+
+
+
+print("\n\n-- ADASYN -- \n")
+
+X_resampled, y_resampled = ADASYN().fit_resample(X, y)
+printOversampling(X_resampled, y_resampled)
 
 
 #############################################
-# Part 3
+# Part 3 Undersampling
 #############################################
 print("\n\n////////////////// PART 3 //////////////////\n\n")
-
-
 
