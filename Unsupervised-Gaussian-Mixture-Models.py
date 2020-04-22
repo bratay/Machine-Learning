@@ -17,6 +17,8 @@ from pandas import read_csv
 from numpy import array
 from numpy import mean
 from numpy import cov
+import matplotlib.pyplot as plt
+
 
 import numpy as np
 import csv
@@ -32,23 +34,47 @@ y = array[:, 4]
 x_one, x_two, y_one, y_two = train_test_split(
     x, y, test_size=0.50, random_state=1)
 
-twoFold = StratifiedKFold(n_splits=2, random_state=1, shuffle=True)
-
-X = np.array([[1, 2], [1, 4], [1, 0],
-...               [10, 2], [10, 4], [10, 0]])
 kmeans = KMeans(n_clusters=2, random_state=0).fit(x)
 kmeans.labels_
-# array([1, 1, 1, 0, 0, 0], dtype=int32)
-kmeans.predict([[0, 0], [12, 3]])
-# array([1, 0], dtype=int32)
+kmeans.predict([[0, 0,0,0], [12, 3, 8, 1]])
 kmeans.cluster_centers_
-# array([[10.,  2.],
-    #    [ 1.,  2.]])
 
 
+#Parameters 
+k = 3
+n_init = 1
 
+numLoops = 0
+numIteration = 100
+for x in range(0, numIteration):
+    numLoops = x
+    #run K-means?
+    reError = 0
+    print("Reconstruction error = " + reError)
+    
+    if("Better clustering based on reconstruction error"):
+        print("Iteration - " + x)
+        
+    if("difference between successive better reconstruction errors is less than 1%"):
+        break
 
+n_init = numLoops
 
+starting_K = 2
+ending_K = 20
+listOfErrors = []
+listOfK = []
+
+for x in range(starting_K, ending_K + 1):
+    #run K-means?
+    reError = 0
+    listOfErrors.append(reError)
+    listOfK.append(x)
+    
+#plot 
+plt.plot(listOfK,listOfErrors)
+plt.xlabel('K')
+plt.ylabel('Reconstruction Error')
 
 
 
