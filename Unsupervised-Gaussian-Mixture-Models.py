@@ -10,6 +10,7 @@ from sklearn.metrics import confusion_matrix
 from pandas.plotting import scatter_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 from collections import Counter
 from matplotlib import pyplot
 from numpy.linalg import eig
@@ -17,9 +18,6 @@ from pandas import read_csv
 from numpy import array
 from numpy import mean
 from numpy import cov
-import matplotlib.pyplot as plt
-
-
 import numpy as np
 import csv
 
@@ -33,6 +31,11 @@ x = array[:, 0:4]
 y = array[:, 4]
 x_one, x_two, y_one, y_two = train_test_split(
     x, y, test_size=0.50, random_state=1)
+
+
+################################################
+#PART 1 - K-Means
+################################################
 
 kmeans = KMeans(n_clusters=2, random_state=0).fit(x)
 kmeans.labels_
@@ -50,10 +53,10 @@ for x in range(0, numIteration):
     numLoops = x
     #run K-means?
     reError = 0
-    print("Reconstruction error = " + reError)
+    print("Reconstruction error = " + str(reError))
     
     if("Better clustering based on reconstruction error"):
-        print("Iteration - " + x)
+        print("Iteration - " + str(x))
         
     if("difference between successive better reconstruction errors is less than 1%"):
         break
@@ -71,28 +74,31 @@ for x in range(starting_K, ending_K + 1):
     listOfErrors.append(reError)
     listOfK.append(x)
     
-#plot 
+#plot
 plt.plot(listOfK,listOfErrors)
 plt.xlabel('K')
 plt.ylabel('Reconstruction Error')
 
+#Manually find elbow of the curve
+elbow_k = "Find elbow of curve" 
+k = elbow_k
 
+#classify all of iris data with predic() and the clusters
 
+# Make prediction on validation dataset
 # modelData = DecisionTreeClassifier()
-# # Make prediction on validation dataset
+modelData = "K- means"
 # modelData.fit(x_one, y_one)
-# prediction1 = modelData.predict(x_two)
+prediction = 0 # modelData.predict(x_two)
+val = np.concatenate((y_two, y_one))
 
-# modelData.fit(x_two, y_two)
-# prediction2 = modelData.predict(x_one)
+# Evaluate prediction
+print("Accuracy metric")
+print(accuracy_score(val, prediction))
+print("\nConfusion matrix")
+print(confusion_matrix(val, prediction))
 
-# # combined both predictions
-# prediction = np.concatenate((prediction1, prediction2))
-# val = np.concatenate((y_two, y_one))
-# # prediction = tempPrediction
 
-# # Evaluate prediction
-# print("Accuracy metric")
-# print(accuracy_score(val, prediction))
-# print("\nConfusion matrix")
-# print(confusion_matrix(val, prediction))
+################################################
+#PART 2 - GMM
+################################################
