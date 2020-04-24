@@ -176,7 +176,7 @@ listOfAIC = []
 listOfK = []
 
 for k in range(starting_K, ending_K + 1):
-    model = GaussianMixture(n_components=k)
+    model = GaussianMixture(n_components=k, n_init = n_init)
     AIC = model.fit(x).aic(x)
     listOfAIC.append(AIC)
     listOfK.append(k)
@@ -196,7 +196,7 @@ ending_K = 20
 listOfBIC = []
 
 for k in range(starting_K, ending_K + 1):
-    model = GaussianMixture(n_components=k)
+    model = GaussianMixture(n_components=k, n_init = n_init)
     BIC = model.fit(x).bic(x)
     listOfBIC.append(BIC)
 
@@ -227,7 +227,7 @@ k = aic_elbow_k
 
 # Make prediction on validation dataset
 
-model = GaussianMixture(n_components=k)
+model = GaussianMixture(n_components=k, n_init = n_init)
 prediction = model.fit(x).predict(x)
 val = newY
 
@@ -243,7 +243,7 @@ print("K = BIC elbow")
 k = bic_elbow_k
 
 # Make prediction on validation dataset
-model = GaussianMixture(n_components=k)
+model = GaussianMixture(n_components=k, n_init = n_init)
 prediction = model.fit(x).predict(x)
 val = newY
 
@@ -258,7 +258,7 @@ print(confusion_matrix(val, prediction))
 print("K = 3")
 
 k = 3
-model = GaussianMixture(n_components=k)
+model = GaussianMixture(n_components=k, n_init = n_init)
 prediction = model.fit(x).predict(x)
 val = newY
 
