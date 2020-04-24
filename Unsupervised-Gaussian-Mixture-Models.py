@@ -14,7 +14,9 @@ import matplotlib.pyplot as plt
 from collections import Counter
 from matplotlib import pyplot
 from numpy.linalg import eig
-from sklearn import mixture
+# from sklearn import mixture
+# from sklearn.mixture import GMM
+from sklearn.mixture import GaussianMixture
 from pandas import read_csv
 from numpy import array
 from numpy import mean
@@ -79,12 +81,6 @@ for i in range(0, numIteration):
 print("--------------------\n\n")
 n_init = numLoops
 
-
-
-
-
-
-
 starting_K = 2
 ending_K = 20
 listOfErrors = []
@@ -92,7 +88,7 @@ listOfK = []
 bestReError = 10000
 
 for k in range(starting_K, ending_K + 1):
-    model = KMeans(n_clusters=k, n_init=n_init, max_iter=1)
+    model = KMeans(n_clusters=k, n_init=n_init)
     curReError = 0
     j = 0
 
@@ -108,61 +104,56 @@ for k in range(starting_K, ending_K + 1):
 plt.plot(listOfK,listOfErrors)
 plt.xlabel('K')
 plt.ylabel('Reconstruction Error')
-plt.show()
 
+#Manually find elbow of the curve
+elbow_k = 7 # got this with my eyes
+k = elbow_k
 
-# #Manually find elbow of the curve
-# elbow_k = "Find elbow of curve"
-# k = elbow_k
+#clean data
+newY = []
+for cur in y:
+    if(cur == 'Iris-setosa'):
+        newY.append(0)
+    if(cur == 'Iris-versicolor'):
+        newY.append(1)
+    if(cur == 'Iris-virginica'):
+        newY.append(2)
 
-# #classify all of iris data with predic() and the clusters
-
-# # Make prediction on validation dataset
-# # modelData = DecisionTreeClassifier()
-# modelData = "K- means"
-# # modelData.fit(x_one, y_one)
-# prediction = 0 # modelData.predict(x_two)
+# Make prediction with k = elbow_k
+model = KMeans(n_clusters=k, n_init=n_init)
+prediction = model.fit_predict(x)
 # val = np.concatenate((y_two, y_one))
+val = y
 
-# # Evaluate prediction
-# print("Accuracy metric")
+# Evaluate prediction
+print("Scores where K = elbow_k")
+print("Accuracy metric can't be calculated K != 3")
 # print(accuracy_score(val, prediction))
-# print("\nConfusion matrix")
+print("\nConfusion matrix")
 # print(confusion_matrix(val, prediction))
+
+
+# Make prediction with k = 3
+k = 3
+model = KMeans(n_clusters=k, n_init=n_init, max_iter=1)
+prediction = model.fit_predict(x)
+val = newY
+
+# Evaluate prediction
+print("Scores where K = 3")
+print("Accuracy metric")
+print(accuracy_score(val, prediction))
+print("\nConfusion matrix")
+print(confusion_matrix(val, prediction))
 
 
 # ################################################
 # #PART 2 - GMM
 # ################################################
-# print('############### PART 2 ###############')
-# #Parameters
-# n_components = 3
-# n_init = 1
-
-
-# np.random.seed(1)
-# g = mixture.GMM(n_components=2)
-# obs = np.concatenate((np.random.randn(100, 1), 10 + np.random.randn(300, 1)))
-# g.fit(obs)
-# #GMM(covariance_type='diag', init_params='wmc', min_covar=0.001,
-# #        n_components=2, n_init=1, n_iter=100, params='wmc',
-# #        random_state=None, thresh=None, tol=0.001)
-# np.round(g.weights_, 2)
-
-# np.round(g.means_, 2)
-
-# np.round(g.covars_, 2)
-
-# g.predict([[0], [2], [9], [10]])
-
-# np.round(g.score([[0], [2], [9], [10]]), 2)
-
-# g.fit(20 * [[0]] +  20 * [[10]])
-# #GMM(covariance_type='diag', init_params='wmc', min_covar=0.001,
-# #        n_components=2, n_init=1, n_iter=100, params='wmc',
-# #        random_state=None, thresh=None, tol=0.001)
-# np.round(g.weights_, 2)
-
+print('############### PART 2 ###############')
+#Parameters
+n_components = 3
+n_init = 1
 
 # numLoops = 0
 # numIteration = 100
@@ -170,7 +161,7 @@ plt.show()
 #     numLoops = x
 #     #run GMM?
 #     lower_bound_attribute = 0
-#     print("lower_bound_ attribute = " + str(reError))
+#     print("lower_bound_attribute = " + str(lower_bound_attribute))
 
 #     if("Better clustering based on lower_bound_ attribute"):
 #         print("Iteration - " + str(x))
@@ -180,99 +171,101 @@ plt.show()
 
 # n_init = numLoops
 
+###### AIC
+starting_K = 2
+ending_K = 20
+listOfAIC = []
+listOfK = []
 
-# ###### AIC
-# starting_K = 2
-# ending_K = 20
-# listOfAIC = []
-# listOfK = []
+for k in range(starting_K, ending_K + 1):
+    model = GaussianMixture(n_components=k)
+    AIC = model.fit(x).aic(x)
+    listOfAIC.append(AIC)
+    listOfK.append(k)
 
-# for x in range(starting_K, ending_K + 1):
-#     #run K-means?
-#     k = n_components
-#     AIC = 0 #.aic()
-#     listOfAIC.append(AIC)
-#     listOfK.append(k)
+#plot AIC
+plt.plot(listOfK,listOfAIC)
+plt.xlabel('K')
+plt.ylabel('AIC')
 
-# #plot
-# plt.plot(listOfK,listOfAIC)
-# plt.xlabel('K')
-# plt.ylabel('AIC')
+#Manually find elbow of the curve
+aic_elbow_k = 13 #"Find elbow of curve"
 
-# #Manually find elbow of the curve
-# aic_elbow_k = "Find elbow of curve"
-# k = aic_elbow_k
+###### BIC
 
-# ###### BIC
+starting_K = 2
+ending_K = 20
+listOfBIC = []
 
-# starting_K = 2
-# ending_K = 20
-# listOfBIC = []
-# listOfK = []
+for k in range(starting_K, ending_K + 1):
+    model = GaussianMixture(n_components=k)
+    BIC = model.fit(x).bic(x)
+    listOfBIC.append(BIC)
 
-# for x in range(starting_K, ending_K + 1):
-#     #run K-means?
-#     k = n_components
-#     BIC = 0 #.bic()
-#     listOfBIC.append(BIC)
-#     listOfK.append(k)
+#plot BIC
+plt.plot(listOfK,listOfBIC)
+plt.xlabel('K')
+plt.ylabel('BIC')
+# plt.show()
 
-# #plot
-# plt.plot(listOfK,listOfBIC)
-# plt.xlabel('K')
-# plt.ylabel('BIC')
-
-# #Manually find elbow of the curve
-# bic_elbow_k = "Find elbow of curve"
-# k = bic_elbow_k
+#Manually find elbow of the curve
+bic_elbow_k = 9 #"Find elbow of curve"
 
 
-# ##### Print K = AIC prediction
-# print("K = AIC elbow")
-# k = aic_elbow_k
+#clean data
+newY = []
+for cur in y:
+    if(cur == 'Iris-setosa'):
+        newY.append(0)
+    if(cur == 'Iris-versicolor'):
+        newY.append(1)
+    if(cur == 'Iris-virginica'):
+        newY.append(2)
 
-# # Make prediction on validation dataset
-# modelData = "GMM"
-# modelData.fit(x, y)
-# prediction = 0 # modelData.predict(x_two)
-# val = np.concatenate((y_two, y_one))
 
-# # Evaluate prediction
-# print("Accuracy metric")
+##### Print K = AIC prediction
+print("K = AIC elbow")
+k = aic_elbow_k
+
+# Make prediction on validation dataset
+
+model = GaussianMixture(n_components=k)
+prediction = model.fit(x).predict(x)
+val = y
+
+# Evaluate prediction
+print("Accuracy metric can't be calculated K != 3")
 # print(accuracy_score(val, prediction))
-# print("\nConfusion matrix")
+print("\nConfusion matrix")
 # print(confusion_matrix(val, prediction))
 
 
-# ######## Print K = BIC prediction
-# print("K = BIC elbow")
-# k = bic_elbow_k
+######## Print K = BIC prediction
+print("K = BIC elbow")
+k = bic_elbow_k
 
-# # Make prediction on validation dataset
-# modelData = "GMM"
-# modelData.fit(x, y)
-# prediction = 0 # modelData.predict(x_two)
-# val = np.concatenate((y_two, y_one))
+# Make prediction on validation dataset
+model = GaussianMixture(n_components=k)
+prediction = model.fit(x).predict(x)
+val = y
 
-# # Evaluate prediction
-# print("Accuracy metric")
+# Evaluate prediction
+print("Accuracy metric can't be calculated K != 3")
 # print(accuracy_score(val, prediction))
-# print("\nConfusion matrix")
+print("\nConfusion matrix")
 # print(confusion_matrix(val, prediction))
 
 
-# ######## Print K = 3 prediction
-# print("K = 3 elbow")
-# k = 3
+######## Print K = 3 prediction
+print("K = 3")
 
-# # Make prediction on validation dataset
-# modelData = "GMM"
-# modelData.fit(x, y)
-# prediction = 0 # modelData.predict(x_two)
-# val = np.concatenate((y_two, y_one))
+k = 3
+model = GaussianMixture(n_components=k)
+prediction = model.fit(x).predict(x)
+val = newY
 
-# # Evaluate prediction
-# print("Accuracy metric")
-# print(accuracy_score(val, prediction))
-# print("\nConfusion matrix")
-# print(confusion_matrix(val, prediction))
+# Evaluate prediction
+print("Accuracy metric")
+print(accuracy_score(val, prediction))
+print("\nConfusion matrix")
+print(confusion_matrix(val, prediction))
