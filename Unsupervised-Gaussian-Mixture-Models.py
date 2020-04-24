@@ -59,14 +59,8 @@ bestReError = 10000
 
 for i in range(0, numIteration):
     numLoops = i
-    curReError = 0
     j = 0
-
-    dis = model.fit_transform(x)
-    for label in model.labels_:
-        curReError += dis[j][label]
-        j += 1
-    
+    curReError = model.fit(x).inertia_
 
     print("Reconstruction error = " + str(curReError))
     if(curReError < bestReError ):
@@ -122,15 +116,12 @@ for cur in y:
 # Make prediction with k = elbow_k
 model = KMeans(n_clusters=k, n_init=n_init)
 prediction = model.fit_predict(x)
-# val = np.concatenate((y_two, y_one))
-val = y
 
 # Evaluate prediction
 print("Scores where K = elbow_k")
 print("Accuracy metric can't be calculated K != 3")
-# print(accuracy_score(val, prediction))
 print("\nConfusion matrix")
-# print(confusion_matrix(val, prediction))
+print(confusion_matrix(newY, prediction))
 
 
 # Make prediction with k = 3
@@ -150,26 +141,33 @@ print(confusion_matrix(val, prediction))
 # ################################################
 # #PART 2 - GMM
 # ################################################
-print('############### PART 2 ###############')
+print('\n\n############### PART 2 ###############\n\n')
 #Parameters
 n_components = 3
 n_init = 1
 
-# numLoops = 0
-# numIteration = 100
-# for x in range(0, numIteration):
-#     numLoops = x
-#     #run GMM?
-#     lower_bound_attribute = 0
-#     print("lower_bound_attribute = " + str(lower_bound_attribute))
+numLoops = 0
+numIteration = 100
+model = GaussianMixture(n_components=n_components, n_init = n_init)
+bestLba = model.fit(x).lower_bound_
 
-#     if("Better clustering based on lower_bound_ attribute"):
-#         print("Iteration - " + str(x))
+for i in range(0, numIteration):
+    numLoops = i
+    curLba = model.fit(x).lower_bound_
+    
+    print("Lower bound attribute = " + str(curLba))
+    if(curLba < bestLba ):
+        print("Iteration - " + str(i))
 
-#     if("difference between successive better lower_bound_attribute less than 1%"):
-#         break
+        if( bestLba / curLba - 1 < .01):
+            print("Less than 1% improved")
+            bestLba = curLba
+            break
+        else:
+            bestLba = curLba
+print("--------------------\n\n")
 
-# n_init = numLoops
+n_init = numLoops
 
 ###### AIC
 starting_K = 2
@@ -231,13 +229,13 @@ k = aic_elbow_k
 
 model = GaussianMixture(n_components=k)
 prediction = model.fit(x).predict(x)
-val = y
+val = newY
 
 # Evaluate prediction
 print("Accuracy metric can't be calculated K != 3")
 # print(accuracy_score(val, prediction))
 print("\nConfusion matrix")
-# print(confusion_matrix(val, prediction))
+print(confusion_matrix(val, prediction))
 
 
 ######## Print K = BIC prediction
@@ -247,13 +245,13 @@ k = bic_elbow_k
 # Make prediction on validation dataset
 model = GaussianMixture(n_components=k)
 prediction = model.fit(x).predict(x)
-val = y
+val = newY
 
 # Evaluate prediction
 print("Accuracy metric can't be calculated K != 3")
 # print(accuracy_score(val, prediction))
 print("\nConfusion matrix")
-# print(confusion_matrix(val, prediction))
+print(confusion_matrix(val, prediction))
 
 
 ######## Print K = 3 prediction
@@ -269,3 +267,6 @@ print("Accuracy metric")
 print(accuracy_score(val, prediction))
 print("\nConfusion matrix")
 print(confusion_matrix(val, prediction))
+
+#Shoe the Graphsgit
+plt.show()
